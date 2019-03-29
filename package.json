@@ -1,0 +1,28 @@
+{
+  "name": "offical",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Leoword/offical.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Leoword/offical/issues"
+  },
+  "homepage": "https://github.com/Leoword/offical#readme",
+  "dependencies": {
+    "@ovl/iso-639-1": "^3.0.3",
+    "koa": "^2.7.0",
+    "koa-bodyparser": "^4.2.1",
+    "koa-router": "^7.4.0",
+    "koa-static": "^5.0.0",
+    "mysql2": "^1.6.5",
+    "sequelize": "^5.1.1"
+  }
+}
