@@ -1,10 +1,12 @@
 global.config = require('../config');
-const db = require('./model');
+global.validate = require('koa2-validation');
+global.Joi = require('joi');
 
+const db = require('./model');
 const bodyParser = require('koa-bodyparser');
 const router = require('./router');
-
 const Koa = require('koa');
+
 const app = new Koa();
 
 app.context.db = db;

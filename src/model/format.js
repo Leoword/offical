@@ -7,7 +7,6 @@ module.exports = sequelize.define('format', {
 		allowNull: false
 	},
 	comment: {
-		type: Sequelize.STRING,
-		allowNull: false
+		type: Sequelize.STRING
 	}
 });
