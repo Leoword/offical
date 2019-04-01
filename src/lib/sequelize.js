@@ -2,7 +2,7 @@ const Sequelize = require('sequelize');
 const {
 	database, username, password, host, dialect, force,
 	freezeTableName
-} = global.config.db;
+} = config.db;
 
 module.exports = new Sequelize(database, username, password, {
 	host, dialect,

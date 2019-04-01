@@ -1,7 +1,7 @@
 const sequelize = require('../lib/sequelize');
 const Sequelize = require('sequelize');
 
-module.exports = sequelize.define('assets', {
+module.exports = sequelize.define('file', {
 	hash: {
 		type:Sequelize.UUID,
 		primaryKey: true
