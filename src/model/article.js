@@ -7,7 +7,8 @@ const lang = new ISO6391();
 exports.Article = sequelize.define('article', {
 	hash: {
 		type: Sequelize.UUID,
-		defaultValue: true
+		defaultValue: Sequelize.UUIDV4,
+		primaryKey: true
 	}
 }, {
 	updatedAt: false
@@ -16,7 +17,7 @@ exports.Article = sequelize.define('article', {
 exports.Language = sequelize.define('language', {
 	hash: {
 		type: Sequelize.UUID,
-		defaultValue: true,
+		defaultValue: Sequelize.UUIDV4,
 		primaryKey: true
 	},
 	name: {
@@ -36,35 +37,32 @@ exports.Language = sequelize.define('language', {
 		allowNull: false
 	},
 	head: {
-		type: Sequelize.UUID,
-		allowNull: false
+		type: Sequelize.UUID
 	}
 }, {
 	createdAt: false,
 	updatedAt: false
 });
 
-exports.Commit = sequelize.define('commit', {
+exports.Version = sequelize.define('version', {
 	hash: {
 		type: Sequelize.UUID,
 		primaryKey: true,
-		defaultValue: true
+		defaultValue: Sequelize.UUIDV4
 	},
 	content: {
 		type: Sequelize.TEXT,
 		allowNull: false
 	},
 	base: {
-		type: Sequelize.UUID,
-		allowNull: false
+		type: Sequelize.UUID
 	},
 	language: {
 		type: Sequelize.UUID,
 		allowNull: false
 	},
 	author: {
-		type: Sequelize.STRING,
-		allowNull: false
+		type: Sequelize.STRING
 	}
 }, {
 	updatedAt: false
@@ -74,7 +72,7 @@ exports.Category = sequelize.define('category', {
 	hash: {
 		type: Sequelize.UUID,
 		primaryKey: true,
-		defaultValue: true
+		defaultValue: Sequelize.UUIDV4
 	},
 	name: {
 		type: Sequelize.STRING,
@@ -87,6 +85,9 @@ exports.Category = sequelize.define('category', {
 		type: Sequelize.UUID,
 		allowNull: false
 	}
+}, {
+	createdAt: false,
+	paranoid: true
 });
 
 exports.AticleOfCategory = sequelize.define('article_category', {

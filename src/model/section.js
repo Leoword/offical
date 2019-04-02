@@ -6,14 +6,14 @@ module.exports = sequelize.define('section', {
 		type: Sequelize.STRING,
 		allowNull: false
 	},
-	formatId: {
+	format: {
 		type: Sequelize.INTEGER,
 		allowNull: false
 	},
 	collection: {
 		type: Sequelize.JSON,
 		allowNull: false,
-		defaultValue: true
+		defaultValue: Sequelize.JSON
 	},
 	comment: {
 		type: Sequelize.STRING
