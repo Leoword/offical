@@ -3,7 +3,7 @@ const lang = new ISO6391();
 
 module.exports = async function (ctx) {
 	const {sequelize, request, response} = ctx;
-	const {language, version} = ctx.data;
+	const {language, commit} = ctx.data;
 
 	const {title, language: name, abstract, content} = request.body;
 	const options = {};
@@ -32,10 +32,10 @@ module.exports = async function (ctx) {
 	try {
 		result = await sequelize.transaction(async t => {
 			const newLanguage = await language.update(options, {transaction: t});
-			let newCommit = version;
+			let newCommit = commit;
 
 			if (content) {
-				newCommit = await version.update({content});
+				newCommit = await commit.update({content});
 			}
 
 			return {

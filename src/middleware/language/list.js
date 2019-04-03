@@ -5,13 +5,13 @@ module.exports = async function () {
 
 	const Article = sequelize.model('article');
 	const Language = sequelize.model('language');
-	const Version = sequelize.model('version');
+	const Commit = sequelize.model('commit');
 
 	const query = {
 		model: Language,
 		where: {},
 		include: [{
-			model: Version,
+			model: Commit,
 			where: {}
 		}]
 	};

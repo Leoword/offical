@@ -4,7 +4,7 @@ module.exports = async function (ctx) {
 
 	const Article = sequelize.model('article');
 	const Language = sequelize.model('language');
-	const Commit = sequelize.model('version');
+	const Commit = sequelize.model('commit');
 	const ArticleOfCategory = sequelize.model('article_category');
 
 	try {

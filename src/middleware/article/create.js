@@ -6,7 +6,7 @@ module.exports = async function (ctx) {
 
 	const Article = sequelize.model('article');
 	const Language = sequelize.model('language');
-	const Version = sequelize.model('version');
+	const Commit = sequelize.model('commit');
 
 	const {title, language: name, abstract, content} = request.body;
 	const languageCode = lang.getCode(name);
@@ -24,12 +24,12 @@ module.exports = async function (ctx) {
 				title, abstract
 			}, {transaction: t});
 
-			const version = await Version.create({
+			const commit = await Commit.create({
 				content, language: language.hash
 			}, {transaction: t});
 	
 			language = await language.update({
-				head: version.hash
+				head: commit.hash
 			}, {transaction: t});
 	
 			return Object.assign({}, {

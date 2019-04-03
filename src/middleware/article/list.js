@@ -16,7 +16,7 @@ module.exports = async function () {
 	};
 
 	const Language = sequelize.model('language');
-	const Commit = sequelize.model('version');
+	const Commit = sequelize.model('commit');
 
 	if (language) {
 		query.where.name = lang.getCode(language);

@@ -21,8 +21,11 @@ exports.Language = sequelize.define('language', {
 		primaryKey: true
 	},
 	name: {
-		type: Sequelize.ENUM(...lang.getAllCodes()),
-		allowNull: false
+		type: Sequelize.STRING,
+		allowNull: false,
+		get() {
+			return lang.getName(this.getDataValue('name'));
+		}
 	},
 	article: {
 		type: Sequelize.UUID,
@@ -44,7 +47,7 @@ exports.Language = sequelize.define('language', {
 	updatedAt: false
 });
 
-exports.Version = sequelize.define('version', {
+exports.Commit = sequelize.define('commit', {
 	hash: {
 		type: Sequelize.UUID,
 		primaryKey: true,

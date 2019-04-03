@@ -3,7 +3,7 @@ module.exports = async function (ctx, next) {
 
 	const Article = sequelize.model('article');
 	const Language = sequelize.model('language');
-	const Version = sequelize.model('version');
+	const Commit = sequelize.model('commit');
 
 	const {articleId, languageId} = request.params;
 
@@ -19,16 +19,16 @@ module.exports = async function (ctx, next) {
 		ctx.throw(404, 'The language of article is not existed.');
 	}
 
-	const version = await Version.findByPK(language.head);
+	const commit = await Commit.findByPK(language.head);
 
 	ctx.data = {
-		language, version
+		language, commit
 	};
 
 	await next();
 
 	response.body = {
 		hash: article.hash, title: language.title, language: language.name,
-		abstract: language.abstract, content: version.content
+		abstract: language.abstract, content: commit.content
 	}
 }

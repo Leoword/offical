@@ -1,6 +1,6 @@
 module.exports = async function (ctx) {
 	const {sequelize} = ctx;
-	const {language, version} = ctx.data;
+	const {language, commit} = ctx.data;
 
 	try {
 		await sequelize.transaction(async t => {
@@ -8,7 +8,7 @@ module.exports = async function (ctx) {
 				transaction: t
 			});
 	
-			version.destroy({
+			commit.destroy({
 				transaction: t
 			});
 		});
