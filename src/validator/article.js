@@ -1,6 +1,7 @@
+const Joi = require('joi');
 
-exports.create = {
-	artilce: {
+exports.artilce = {
+	create: {
 		body: {
 			title: Joi.string().required().min(2),
 			language: Joi.string().required(),
@@ -12,16 +13,7 @@ exports.create = {
 			keyword: Joi.string()
 		}
 	},
-	category: {
-		body: {
-			name: Joi.string().required().min(2),
-			comment: Joi.string().max(200)
-		}
-	}
-};
-
-exports.update = {
-	artilce: {
+	update: {
 		body: {
 			title: Joi.string().min(2),
 			language: Joi.string(),
@@ -32,11 +24,20 @@ exports.update = {
 			language: Joi.string(),
 			keyword: Joi.string()
 		}
+	}
+};
+
+exports.category = {
+	create: {
+		body: {
+			name: Joi.string().required().min(2),
+			comment: Joi.string().max(200)
+		}
 	},
-	category: {
+	update: {
 		body: {
 			name: Joi.string().min(2),
 			comment: Joi.string().max(200)
 		}
 	}
-}
+};

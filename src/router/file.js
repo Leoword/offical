@@ -1,4 +1,7 @@
+const Router = require('koa-router');
 const router = module.exports = new Router();
+const validate = require('koa2-validation');
+
 const fileSchema = require('../validator');
 
 const {file} = require('../middleware');

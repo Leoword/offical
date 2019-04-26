@@ -18,6 +18,8 @@ module.exports = async function (ctx) {
 
 	if (list.length !== 0) {
 		ctx.throw(400, 'The name of format has existed.');
+
+		return;
 	}
 
 	try {
@@ -29,4 +31,4 @@ module.exports = async function (ctx) {
 	} catch (e) {
 		ctx.throw(500, 'Internal Error.');
 	}
-}
+};

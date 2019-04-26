@@ -1,3 +1,5 @@
+const Joi = require('joi');
+
 module.exports = {
 	body: {
 		comment: Joi.string(),
@@ -7,4 +9,4 @@ module.exports = {
 	query: {
 		type: Joi.string()
 	}
-}
+};

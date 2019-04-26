@@ -1,19 +1,20 @@
-module.exports = async function () {
+const Sequelize = require('sequelize');
+const ISO6391 = require('@ovl/iso-639-1');
+const lang = new ISO6391();
+
+module.exports = async function (ctx) {
 	const {sequelize, request, response} = ctx;
-	const {id} = request.params.id;
+	const {id} = ctx.params;
+	const {language, keyword} = request.query;
 
-
-	const Article = sequelize.model('article');
 	const Language = sequelize.model('language');
 	const Commit = sequelize.model('commit');
 
 	const query = {
-		model: Language,
-		where: {},
-		include: [{
-			model: Commit,
-			where: {}
-		}]
+		where: {
+			article: id
+		},
+		attributes: ['hash', 'name', 'title', 'abstact', 'head']
 	};
 
 	if (language) {
@@ -24,18 +25,29 @@ module.exports = async function () {
 		query.where.title = {
 			[Sequelize.Op.like]: `%${keyword}%`
 		};
-
-		query.include[0].where.content = {
-			[Sequelize.Op.like]: `%${keyword}%`
-		};
 	}
 
-	const list = await Article.findAll({
+	const languageList = await Language.findAll(query);
+
+	const commitList = await Commit.findAll({
 		where: {
-			hash: id
+			hash: {
+				[Sequelize.Op.in]: languageList.map(({head}) => head)
+			}
 		},
-		include: [query]
+		attributes: ['hash', 'content']
 	});
 
-	response.body = list;
-}
+	response.body = languageList.map(languageItem => {
+
+		commitList.forEach(commit => {
+			if (commit.hash === languageItem.head) {
+				Object.assign({}, languageItem, {
+					content: commit.content
+				});
+			}
+		});
+
+		return languageItem;
+	});
+};

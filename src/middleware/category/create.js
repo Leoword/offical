@@ -13,13 +13,17 @@ module.exports = async function (ctx) {
 
 	if (list.length !== 0) {
 		ctx.throw(400, 'The name of category has existed.');
+
+		return;
 	}
 
 	if (parent) {
-		const parentCategory = await Category.findByPK(parent);
+		const parentCategory = await Category.findByPk(parent);
 
 		if (!parentCategory) {
 			ctx.throw(404, 'The parent category is not existed.');
+
+			return;
 		}
 	}
 
@@ -32,4 +36,4 @@ module.exports = async function (ctx) {
 	} catch (e) {
 		ctx.throw(500, 'Internal Error.');
 	}
-}
+};

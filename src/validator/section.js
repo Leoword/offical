@@ -1,38 +1,66 @@
-exports.create = {
-	section: {
+const Joi = require('joi');
+
+exports.section = {
+	create: {
 		body: {
 			formatId: Joi.number().required(),
-			collection: Joi.object().keys({
-				
-			}).required(),
-			comment: Joi.string().max(200)
+			collection: Joi.array().items(
+				Joi.object().keys({
+					type: Joi.string().allow(['file', 'article']).required(),
+					args: Joi.object().keys({
+						category: Joi.string(),
+						type: Joi.string(),
+						thumbnail: Joi.boolean(),
+						exp: {
+							limit: Joi.number(),
+							hash: Joi.string(),
+							title: Joi.string()
+						}
+					})
+				})
+			).required(),
+			comment: Joi.string().max(200),
+			name: Joi.string().required()
 		},
 		query: {
 			formatId: Joi.number()
 		}
 	},
-	format: {
+	update: {
 		body: {
-			name: Joi.string().max(15).required(),
-			comment: Joi.string().max(200)
+			formatId: Joi.number(),
+			collection: Joi.array().items(
+				Joi.object().keys({
+					type: Joi.string().allow(['file', 'article']).required(),
+					args: Joi.object().keys({
+						category: Joi.string(),
+						type: Joi.string(),
+						thumbnail: Joi.boolean(),
+						exp: {
+							limit: Joi.number(),
+							hash: Joi.string(),
+							title: Joi.string()
+						}
+					})
+				})
+			),
+			comment: Joi.string().max(200),
+			name: Joi.string()
 		}
 	}
 };
 
-exports.update = {
-	section: {
+exports.format = {
+	create: {
 		body: {
-			formatId: Joi.number(),
-			collection: Joi.object().keys({
-				
-			}),
-			comment: Joi.string().max(200)
+			name: Joi.string().required(),
+			comment: Joi.string()
 		}
 	},
-	format: {
+	update: {
 		body: {
-			name: Joi.string().max(15),
-			comment: Joi.string().max(200)
+			name: Joi.string(),
+			comment: Joi.string()
 		}
 	}
 };

@@ -1,14 +1,16 @@
 module.exports = async function (ctx, next) {
-	const {sequelize, request, response} = ctx;
+	const {sequelize, params, response} = ctx;
 
 	const Section = sequelize.model('section');
 
-	const {id} = request.params;
+	const {id} = params;
 
-	const section = await Section.findByPK(id);
+	const section = await Section.findByPk(id);
 
 	if (!section) {
 		ctx.throw(404, 'The section is not existed.');
+
+		return;
 	}
 
 	ctx.data = section;
@@ -16,4 +18,4 @@ module.exports = async function (ctx, next) {
 	await next();
 
 	response.body = section;
-}
+};

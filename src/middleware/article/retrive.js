@@ -1,14 +1,16 @@
 module.exports = async function (ctx, next) {
-	const {sequelize, request} = ctx;
+	const {sequelize, params} = ctx;
 	const Article = sequelize.model('article');
 
-	const {articleId} = request.params;
+	const {articleId} = params;
 
-	const article = await Article.findByPK(articleId);
+	const article = await Article.findByPk(articleId);
 
 	if (!article) {
 		ctx.throw(404, 'The article is not existed.');
+
+		return;
 	}
 
 	await next();
-}
+};

@@ -1,4 +1,5 @@
 const ISO6391 = require('@ovl/iso-639-1');
+const getFiles = require('../../lib/getFilesOfArticle');
 const lang = new ISO6391();
 
 module.exports = async function (ctx) {
@@ -9,7 +10,7 @@ module.exports = async function (ctx) {
 	const Commit = sequelize.model('commit');
 
 	const {title, language: name, abstract, content} = request.body;
-	const articleId = request.params.id;
+	const articleId = ctx.params.id;
 
 	const languageCode = lang.getCode(name);
 
@@ -17,7 +18,7 @@ module.exports = async function (ctx) {
 		ctx.throw(400, 'The language is not existed.');
 	}
 
-	const article = await Article.findByPK(articleId);
+	const article = await Article.findByPk(articleId);
 
 	if (!article) {
 		ctx.throw(404, 'The article is not existed.');
@@ -25,9 +26,11 @@ module.exports = async function (ctx) {
 
 	try {
 		const result = await sequelize.transaction(async t => {
+			const {asset, thumbnail} = getFiles(content);
+
 			let language = await Language.create({
 				name: languageCode, article: article.hash,
-				title, abstract
+				title, abstract, asset, thumbnail
 			}, {transaction: t});
 
 			const commit = await Commit.create({
@@ -45,7 +48,7 @@ module.exports = async function (ctx) {
 					hash: language.hash,
 					name, title, abstract, content
 				}
-			})
+			});
 		});
 
 		response.body = result;

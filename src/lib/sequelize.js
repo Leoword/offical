@@ -1,13 +1,12 @@
 const Sequelize = require('sequelize');
 const {
-	database, username, password, host, dialect, force,
-	freezeTableName
+	database, username, password, host, force
 } = config.db;
 
 module.exports = new Sequelize(database, username, password, {
-	host, dialect,
+	host, dialect: 'mysql',
 	define: {
-		freezeTableName
+		freezeTableName: true
 	},
 	timezone: '+08:00',
 	sync: {

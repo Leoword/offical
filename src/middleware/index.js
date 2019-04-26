@@ -31,7 +31,7 @@ module.exports = {
 		getRetrive: require('./section/retrive'),
 		update: require('./section/update'),
 		delete: require('./section/delete'),
-		getCollection: null
+		getCollection: require('./section/collection')
 	},
 	format: {
 		create: require('./format/create'),
@@ -45,5 +45,13 @@ module.exports = {
 		getList: require('./file/list'),
 		getRetrive: require('./file/retrive'),
 		delete: require('./file/delete')
+	},
+	page: {
+		create: require('./page/create'),
+		getList: require('./page/list'),
+		getRetrive: require('./page/retrive'),
+		update: require('./page/update'),
+		delete: require('./page/delete'),
+		validate: require('./page/validate')
 	}
-}
+};

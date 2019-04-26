@@ -1,4 +1,5 @@
 const ISO6391 = require('@ovl/iso-639-1');
+const getFiles = require('../../lib/getFilesOfArticle');
 const lang = new ISO6391();
 
 module.exports = async function (ctx) {
@@ -14,6 +15,8 @@ module.exports = async function (ctx) {
 	
 		if (!languageCode) {
 			ctx.throw(400, 'The language is not existed.');
+
+			return;
 		}
 
 		options.name = languageCode;
@@ -31,21 +34,26 @@ module.exports = async function (ctx) {
 
 	try {
 		result = await sequelize.transaction(async t => {
-			const newLanguage = await language.update(options, {transaction: t});
 			let newCommit = commit;
 
 			if (content) {
-				newCommit = await commit.update({content});
+				const {asset, thumbnail} = getFiles(content);
+				options.asset = asset;
+				options.thumbnail = thumbnail;
+
+				newCommit = await commit.update({content}, {transaction: t});
 			}
+
+			const newLanguage = await language.update(options, {transaction: t});
 
 			return {
 				hash: newLanguage.article, title: newLanguage.title, abstract: newLanguage.abstract,
 				name: newLanguage.name, content: newCommit.content
-			}
+			};
 		});
 	} catch (e) {
 		ctx.throw(500, 'Internal Error.');
 	}
 
 	response.body = result;
-}
+};

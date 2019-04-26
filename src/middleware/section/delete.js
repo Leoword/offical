@@ -1,5 +1,5 @@
 module.exports = async function (ctx) {
-	const {sequelize, response} = ctx;
+	const {response} = ctx;
 	
 	const section = ctx.data;
 
@@ -10,4 +10,4 @@ module.exports = async function (ctx) {
 	} catch (e) {
 		ctx.throw(500, 'Internal Error.');
 	}
-}
+};

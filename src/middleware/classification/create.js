@@ -1,6 +1,6 @@
 module.exports = async function (ctx) {
-	const {sequelize, response, request} = ctx;
-	const {articleId, categoryId} = request.params;
+	const {sequelize, response, params} = ctx;
+	const {articleId, categoryId} = params;
 
 	const ArticleOfCategory = sequelize.model('article_category');
 
@@ -15,4 +15,4 @@ module.exports = async function (ctx) {
 	} catch (e) {
 		ctx.throw(500, 'Internal Error.');
 	}
-}
+};

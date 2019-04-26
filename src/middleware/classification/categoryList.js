@@ -1,6 +1,8 @@
+const Sequelize = require('sequelize');
+
 module.exports = async function (ctx) {
-	const {sequelize, response, request} = ctx;
-	const {articleId} = request.params;
+	const {sequelize, response, params} = ctx;
+	const {articleId} = params;
 
 	const Category = sequelize.model('category');
 	const ArticleOfCategory = sequelize.model('article_category');
@@ -9,10 +11,17 @@ module.exports = async function (ctx) {
 		where: {
 			article: articleId
 		},
-		include: [{
-			model: Category
-		}]
+		attributes: ['category']
 	});
 
-	response.body = list;
-}
+	const categoryList = await Category.findAll({
+		where: {
+			hash: {
+				[Sequelize.Op.in]: list.map(({category}) => category)
+			}
+		},
+		attributes: ['hash', 'name', 'comment']
+	});
+
+	response.body = categoryList;
+};
