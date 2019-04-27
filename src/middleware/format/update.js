@@ -3,7 +3,7 @@ const Sequelize = require('sequelize');
 module.exports = async function (ctx) {
 	const {sequelize, response, request} = ctx;
 	const format = ctx.data;
-	const {name, comment} = request;
+	const {name, comment} = request.body;
 
 	const Format = sequelize.model('format');
 
@@ -27,7 +27,7 @@ module.exports = async function (ctx) {
 			name, comment
 		});
 
-		response.body = newFormat;
+		ctx.body = newFormat;
 	} catch (e) {
 		ctx.throw(500, 'Internal Error.');
 	}

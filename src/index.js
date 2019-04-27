@@ -1,17 +1,22 @@
 global.config = require('../config');
 
-const bodyParser = require('koa-bodyparser');
+const bodyParser = require('koa-body');
 const router = require('./router');
 const Koa = require('koa');
 
 const {Pages} = require('./model');
-app.context.Page = Pages;
 
 const app = new Koa();
 
+app.context.Page = Pages;
 app.context.sequelize = require('./lib/sequelize');
 
-app.use(bodyParser());
+app.use(bodyParser({
+	multipart: true,
+	formidable: {
+		maxFileSize: 200*1024*1024
+	}
+}));
 app.use(router.routes());
 
-app.listen(config.server.port);
+app.listen(config.server.port, '0.0.0.0');

@@ -4,16 +4,14 @@ const Sequelize = require('sequelize');
 module.exports = sequelize.define('file', {
 	hash: {
 		type:Sequelize.UUID,
-		primaryKey: true
-	},
-	comment: {
-		type: Sequelize.STRING
+		primaryKey: true,
+		defaultValue: Sequelize.UUIDV4
 	},
 	type: {
 		type: Sequelize.STRING
 	},
 	file: {
-		type: Sequelize.BLOB
+		type: Sequelize.BLOB('medium')
 	}
 }, {
 	updatedAt: false

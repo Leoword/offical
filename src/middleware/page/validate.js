@@ -12,5 +12,5 @@ module.exports = async function (ctx, next) {
 
 	request.body.sectionList = filteredList;
 	
-	next();
+	await next();
 };

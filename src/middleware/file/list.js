@@ -1,21 +1,16 @@
 module.exports = async function (ctx) {
-	const {sequelize, request, response} = ctx;
-	const {type} = request.query;
+	const {sequelize, response} = ctx;
 
 	const File = sequelize.model('file');
 
-	const fileList = await File.findAll({
-		where: {
-			type
-		}
-	});
+	const fileList = await File.findAll();
 
 	response.body = fileList.map(file => {
 		const {hash, type, comment} = file;
 
 		return {
 			url: `/api/file/${hash}`,
-			type, comment
+			type, comment, id: hash
 		};
 	});
 };

@@ -14,8 +14,20 @@ module.exports = async function (ctx) {
 		return;
 	}
 
+	const list = await Section.findAll({
+		where: {
+			name
+		}
+	});
+
+	if (list.length !== 0) {
+		ctx.throw(400, 'The name of section has existed.');
+
+		return;
+	}
+
 	const section = await Section.create({
-		formatId, collection, comment, name
+		format: formatId, collection, comment, name
 	});
 
 	response.body = section;

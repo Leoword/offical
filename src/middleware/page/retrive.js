@@ -3,7 +3,7 @@ module.exports = function (ctx, next) {
 
 	const pageId = params.id;
 
-	const page = Page.findByPk(pageId);
+	const page = Page.findByPK(pageId);
 
 	if (!page) {
 		ctx.throw(404, 'The page is not existed.');

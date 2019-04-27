@@ -1,12 +1,28 @@
+const fs = require('fs');
+
 module.exports = async function (ctx) {
 	const {sequelize, request, response} = ctx;
-	const {type, file: fileBlob, comment} = request.body;
-
+	
+	const {type} = request.body;
+	const file = request.files.file;
 	const File = sequelize.model('file');
 
-	const file = await File.create({type, file: fileBlob, comment});
+	let data = Buffer.from([]);
+	const readerStream = fs.createReadStream(file.path);
 
-	response.body = {
-		url: `/api/file/${file.hash}`
-	};
+	readerStream.on('data', function(chunk) {
+		data = Buffer.concat([data, chunk], data.length + chunk.length);
+ 	});
+ 
+	return new Promise((resolve) => {
+		readerStream.on('end',async function () {
+			const newFile = await File.create({type, file: data});
+	
+			response.body = {
+				url: `/api/file/${newFile.hash}`
+			};
+
+			resolve();
+		});
+	});
 };

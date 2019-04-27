@@ -28,10 +28,13 @@ module.exports = {
 	},
 	init() {
 		createStore(this.dirPath, this.filePath);
+		const pageList = fs.readFileSync(this.filePath, {encoding: 'utf8'});
 
-		const list = JSON.parse(fs.readFileSync(this.filePath, {encoding: 'utf8'}));
+		const list = pageList ? JSON.parse(fs.readFileSync(this.filePath, {encoding: 'utf8'})): [];
 
-		list.forEach(page => this.pages.push(new Page(page)));
+		list.forEach(page => this.pages.push(
+			new Page(page.id, page.name, page.path, page.sectionList, page.comment)
+		));
 
 		id = this.pages.length;
 	},
@@ -40,7 +43,9 @@ module.exports = {
 
 		const origin = Object.assign({}, this.pages);
 
-		const result = persistent(this.filePath, JSON.stringify(this.pages.push(page)));
+		this.pages.push(page);
+
+		const result = persistent(this.filePath, JSON.stringify(this.pages));
 
 		if (!result) {
 			this.pages = origin;
@@ -56,10 +61,10 @@ module.exports = {
 		return this.pages;
 	},
 	findByPK(id) {
-		return this.pages.find(page => page.id === id);
+		return this.pages.find(page => page.id - 0 === id - 0);
 	},
 	update(id, {name, path, sectionList, comment}) {
-		const page = this.findByPK(id);
+		const page = this.findByPK(id - 0);
 		const origin = Object.assign({}, this.pages);
 
 		page.update({name, path, sectionList, comment});
@@ -78,7 +83,7 @@ module.exports = {
 		const origin = Object.assign({}, this.pages);
 
 		this.pages.find((page, index) => {
-			if (page.id === id) {
+			if (page.id - 0 === id - 0) {
 				this.pages.splice(index);
 			}
 		});
