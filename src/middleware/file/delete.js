@@ -8,7 +8,7 @@ module.exports = async function (ctx) {
 	});
 
 	articleList.forEach(article => {
-		article.asset.forEach(fileDescribe => {
+		JSON.parse(article.asset).forEach(fileDescribe => {
 			if (fileDescribe.type === file.type && fileDescribe.hash) {
 				isUsing = true;
 			}

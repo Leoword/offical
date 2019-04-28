@@ -25,7 +25,7 @@ module.exports = async function (ctx) {
 
 			let language = await Language.create({
 				name: languageCode, article: article.hash,
-				title, abstract, asset, thumbnail
+				title, abstract, asset: JSON.stringify(asset), thumbnail
 			}, {transaction: t});
 
 			const commit = await Commit.create({

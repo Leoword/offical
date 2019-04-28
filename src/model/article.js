@@ -91,8 +91,7 @@ exports.Category = sequelize.define('category', {
 		type: Sequelize.STRING
 	},
 	parent: {
-		type: Sequelize.UUID,
-		allowNull: false
+		type: Sequelize.UUID
 	}
 }, {
 	createdAt: false,

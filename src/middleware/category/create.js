@@ -3,7 +3,7 @@ module.exports = async function (ctx) {
 
 	const Category = sequelize.model('category');
 
-	const {name, comment, parent} = request;
+	const {name, comment, parent} = request.body;
 
 	const list = await Category.findAll({
 		where: {

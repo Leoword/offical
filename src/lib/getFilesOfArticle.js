@@ -5,16 +5,18 @@ module.exports = function (content) {
 	const type = ['image'];
 
 	let thumbnail;
-	const assets = tokenList.map(token => {
+	const assets = [];
+
+	tokenList.forEach(token => {
 
 		if (token.children !== null) {
 
-			return token.children.map(element => {
+			token.children.forEach(element => {
 
 				if (type.indexOf(element.type) !== -1) {
 					const url = element.attrs[0][1];
 
-					return url.substring(url.lastIndexOf('/'));
+					assets.push(url.substring(url.lastIndexOf('/')));
 				}
 
 				if (!thumbnail && element.type === 'image') {
