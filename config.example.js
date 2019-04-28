@@ -1,6 +1,6 @@
 module.exports = {
 	db: {
-		database: 'offical',
+		database: 'official',
 		username: 'root',
 		password: '123456',
 		host: 'localhost',
@@ -9,8 +9,10 @@ module.exports = {
 	storage: {
 		dir: '.store',
 		file: 'page.json'
-	}, 
+	},
 	server: {
-		port: 8081
+		port: 8081,
+		protol: 'http',
+		hostname: 'localhost'
 	}
 };
