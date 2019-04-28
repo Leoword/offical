@@ -12,17 +12,20 @@ module.exports = function (content) {
 		if (token.children !== null) {
 
 			token.children.forEach(element => {
+				if (!element) {
+					return;
+				}
 
 				if (type.indexOf(element.type) !== -1) {
 					const url = element.attrs[0][1];
 
-					assets.push(url.substring(url.lastIndexOf('/')));
+					assets.push(url.substring(url.lastIndexOf('/') + 1));
 				}
 
 				if (!thumbnail && element.type === 'image') {
 					const url = element.attrs[0][1];
 
-					thumbnail = url.substring(url.lastIndexOf('/'));
+					thumbnail = url.substring(url.lastIndexOf('/') + 1);
 				}
 			});
 		}

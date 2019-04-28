@@ -11,7 +11,7 @@ module.exports = async function ({catgory, thumbnail, exp}) {
 	const categoryList = await Category.findAll({
 		where: {
 			name: {
-				[Sequelize.Op.like]: `%${catgory}%`
+				[Sequelize.Op.like]: `%${catgory ? catgory : ''}%`
 			}
 		},
 		attributes: ['hash']
@@ -32,7 +32,7 @@ module.exports = async function ({catgory, thumbnail, exp}) {
 				[Sequelize.Op.in]: list.map(({article}) => article)
 			}
 		},
-		attributes: ['hash', 'name', 'title', 'abstact', 'head', 'thumbnail']
+		attributes: ['hash', 'name', 'title', 'abstract', 'head', 'thumbnail']
 	};
 
 	if (exp) {

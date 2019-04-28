@@ -19,7 +19,7 @@ module.exports = async function (ctx) {
 			const newFile = await File.create({type, file: data});
 	
 			response.body = {
-				url: `/api/file/${newFile.hash}`
+				url: `${config.server.protol}://${config.server.hostname}:${config.server.port}/api/file/${newFile.hash}`
 			};
 
 			resolve();

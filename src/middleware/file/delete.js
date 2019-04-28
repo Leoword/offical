@@ -8,11 +8,15 @@ module.exports = async function (ctx) {
 	});
 
 	articleList.forEach(article => {
-		JSON.parse(article.asset).forEach(fileDescribe => {
-			if (fileDescribe.type === file.type && fileDescribe.hash) {
-				isUsing = true;
-			}
-		});
+		try {
+			JSON.parse(article.asset).forEach(fileDescribe => {
+				if (fileDescribe.type === file.type && fileDescribe.hash) {
+					isUsing = true;
+				}
+			});
+		} catch (e) {
+			
+		}
 	});
 
 	if (isUsing) {

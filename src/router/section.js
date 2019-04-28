@@ -17,4 +17,6 @@ router.get('/format/:id', format.getRetrive);
 router.put('/format/:id', validate(formatValidate.update), format.getRetrive, format.update);
 router.delete('/format/:id', format.getRetrive, format.delete);
 
-router.get('/section/:id/collection', section.getRetrive, section.getCollection);
+// router.get('/section/:id/collection', section.getRetrive, section.getCollection);
+
+router.get('/app/section/:id', section.getCollection);

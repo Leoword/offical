@@ -9,7 +9,7 @@ module.exports = async function (ctx) {
 		const {hash, type, comment} = file;
 
 		return {
-			url: `/api/file/${hash}`,
+			url: `${config.server.protol}://${config.server.hostname}:${config.server.port}/api/file/${hash}`,
 			type, comment, id: hash
 		};
 	});

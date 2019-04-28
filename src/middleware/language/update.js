@@ -38,7 +38,7 @@ module.exports = async function (ctx) {
 
 			if (content) {
 				const {asset, thumbnail} = getFiles(content);
-				options.asset = asset;
+				options.asset = JSON.stringify(asset);
 				options.thumbnail = thumbnail;
 
 				newCommit = await commit.update({content}, {transaction: t});
