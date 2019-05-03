@@ -1,0 +1,46 @@
+{
+    "env": {
+        "node": true,
+        "commonjs": true,
+        "es6": true
+    },
+    "extends": "eslint:recommended",
+    "globals": {
+        "Atomics": "readonly",
+        "SharedArrayBuffer": "readonly"
+    },
+    "parserOptions": {
+        "ecmaVersion": 2018
+    },
+    "rules": {
+        "semi": ["error", "always"],
+        "quotes": ["error", "single"],
+        "indent": ["error", "tab"],
+        "eqeqeq": "warn",
+        "global-require": "error",
+        "no-constant-condition": "error",
+        "no-dupe-args": "error",
+        "no-dupe-keys": "error",
+        "no-empty": "error",
+        "no-extra-parens": "error",
+        "no-extra-semi": "error",
+        "no-func-assign": "error",
+        "no-inner-declarations": "error",
+        "no-irregular-whitespace": "error",
+        "no-unreachable": "error",
+        "require-atomic-updates": "error",
+        "use-isnan": "error",
+        "valid-typeof": "error",
+        "block-scoped-var": "error",
+        "class-methods-use-this": "error",
+        "curly": "error",
+        "dot-notation": "error",
+        "no-empty-function": "error",
+        "no-global-assign": "error",
+        "no-restricted-globals": "error",
+        "no-undef": "error",
+        "no-const-assign": "error",
+        "no-duplicate-imports": "error",
+        "no-var": "error"
+    }
+}

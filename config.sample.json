@@ -1,0 +1,17 @@
+{
+	"db": {
+		"database": "database",
+		"username": "username",
+		"password": "password",
+		"host": "host",
+		"force": false
+	},
+	"server": {
+		"hostname": "localhost",
+		"port": "8080",
+		"protocol": "http"
+	},
+	"static": {
+		"path": "./www"
+	}
+}
