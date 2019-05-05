@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-const sequelize = require('../sequelize');
+const sequelize = require('./sequelize');
 
 module.exports = sequelize.define('classification', {
 	id: {
@@ -8,12 +8,10 @@ module.exports = sequelize.define('classification', {
 		primaryKey: true
 	},
 	articleId: {
-		type: Sequelize.INTEGER,
-		allowNull: false
+		type: Sequelize.INTEGER
 	},
 	categoryId: {
-		type: Sequelize.INTEGER,
-		allowNull: false
+		type: Sequelize.INTEGER
 	},
 	createdAt: {
 		type: Sequelize.DATE,

@@ -11,6 +11,10 @@
 		"port": "8080",
 		"protocol": "http"
 	},
+	"cookie": {
+		"key": "koa:sess",
+		"maxAge": 86400000
+	},
 	"static": {
 		"path": "./www"
 	}

@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-const sequelize = require('../sequelize');
+const sequelize = require('./sequelize');
 
 module.exports = sequelize.define('section', {
 	id: {
@@ -12,8 +12,7 @@ module.exports = sequelize.define('section', {
 		allowNull: false
 	},
 	formatId: {
-		type: Sequelize.INTEGER,
-		allowNull: false
+		type: Sequelize.INTEGER
 	},
 	collection: {
 		type: Sequelize.STRING,

@@ -1,16 +1,18 @@
-const config = require('../../config.json');
+const path = require('path');
+const config = require(path.resolve(process.cwd(), 'config.json'));
 
 const User = require('./user');
 const Page = require('./page');
 const Section = require('./section');
 const Format = require('./format');
-const Article = require('./content');
-const Commit = require('./content/commit');
+const Content = require('./content');
+const Article = require('./article');
+const Commit = require('./commit');
 const Category = require('./category');
 const Classification = require('./classification');
 const File = require('./file');
 
-const sequelize = require('../sequelize');
+const sequelize = require('./sequelize');
 
 sequelize.sync({
 	force: config.db.sync
@@ -19,7 +21,7 @@ sequelize.sync({
 module.exports = {
 	User,
 	Page, Section, Format,
-	Article, Commit,
+	Content, Article, Commit,
 	Category, Classification,
 	File
 };

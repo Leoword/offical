@@ -8,14 +8,30 @@ const format = require('./format');
 const section = require('./section');
 const page = require('./page');
 const user = require('./user');
+const login = require('./login');
 
-const router = module.exports = new Router({prefix: '/api'});
+const router = module.exports = new Router();
 
-router.use(article.routes());
-router.use(category.routes());
-router.use(classification.routes());
-router.use(file.routes());
-router.use(format.routes());
-router.use(section.routes());
-router.use(page.routes());
-router.use(user.routes());
+const validatedRouter = new Router();
+
+validatedRouter.use(article.routes());
+validatedRouter.use(category.routes());
+validatedRouter.use(classification.routes());
+validatedRouter.use(file.routes());
+validatedRouter.use(format.routes());
+validatedRouter.use(section.routes());
+validatedRouter.use(page.routes());
+validatedRouter.use(user.routes());
+
+router.use('/api', isLogin, validatedRouter.routes());
+router.use(login.routes());
+
+async function isLogin(ctx, next) {
+	if (!ctx.session.username) {
+		ctx.throw(401, 'You have to login.');
+
+		return;
+	}
+
+	await next();
+}

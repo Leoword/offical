@@ -1,8 +1,5 @@
 const Sequelize = require('sequelize');
-const sequelize = require('../sequelize');
-
-const crypto = require('crypto');
-const KEY = 'secret';
+const sequelize = require('./sequelize');
 
 module.exports = sequelize.define('user', {
 	id: {
@@ -17,12 +14,7 @@ module.exports = sequelize.define('user', {
 	},
 	password: {
 		type: Sequelize.STRING,
-		allowNull: false,
-		set(value) {
-			const password = crypto.createHmac('sha256', KEY).update(value).digest('hex');
-
-			this.setDataValue('password', password);
-		}
+		allowNull: false
 	},
 	createdAt: {
 		type: Sequelize.DATE,
