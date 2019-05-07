@@ -3,25 +3,23 @@ const router = module.exports = new Router();
 
 router.post('/page', async function (ctx) {
 	const {db, request} = ctx;
-	const {path, sectionList, state, comment} = request.body;
+	const {options} = request.body;
 
-	const page = await db.Page.create({
-		path, sectionList, state, comment
-	});
+	const page = await db.Page.create();
 
-	ctx.body = page;
+	ctx.body = page.write(options);
 });
 
 router.get('/page', async function (ctx) {
 	const {db} = ctx;
 
-	ctx.body = await db.Page.findAll();
+	ctx.body = await db.Page.getPages();
 });
 
 router.get('/page/:id', async function (ctx) {
 	const {db, params} = ctx;
 
-	const page = await db.Page.findByPk(params.id);
+	const page = await db.Page.get(params.id);
 
 	if (!page) {
 		ctx.throw(404, 'The page is not existed.');
@@ -34,9 +32,9 @@ router.get('/page/:id', async function (ctx) {
 
 router.put('/page/:id', async function (ctx) {
 	const {db, request, params} = ctx;
-	const {path, sectionList, state, comment} = request.body;
+	const {options} = request.body;
 
-	const page = await db.Page.findByPk(params.id);
+	const page = await db.Page.get(params.id);
 
 	if (!page) {
 		ctx.throw(404, 'The page is not existed.');
@@ -44,23 +42,13 @@ router.put('/page/:id', async function (ctx) {
 		return;
 	}
 
-	ctx.body = await page.update({
-		path, sectionList, state, comment
-	});
+	ctx.body = await page.write(options);
 });
 
 router.delete('/page/:id', async function (ctx) {
 	const {db, params} = ctx;
 
-	const page = await db.Page.findByPk(params.id);
-
-	if (!page) {
-		ctx.throw(404, 'The page is not existed.');
-
-		return;
-	}
-
-	await page.destroy();
+	await db.Page.destroy(params.id);
 
 	ctx.status = 200;
 });

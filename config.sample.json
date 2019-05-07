@@ -17,5 +17,9 @@
 	},
 	"static": {
 		"path": "./www"
+	},
+	"store": {
+		"path": "C:\\Users",
+		"filename": "store.json"
 	}
 }

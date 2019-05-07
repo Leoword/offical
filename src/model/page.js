@@ -1,36 +1,72 @@
-const Sequelize = require('sequelize');
-const sequelize = require('./sequelize');
+const Base = require('./pageAdapter');
+const path = require('path');
+const fs = require('fs');
 
-module.exports = sequelize.define('page', {
-	id: {
-		type: Sequelize.INTEGER,
-		autoIncrement: true,
-		primaryKey: true
+const {store} = require(path.resolve(process.cwd(), 'config.json'));
+const filePath = `${store.path}/${store.filename}`;
+
+let i = 0;
+
+module.exports = new Base({
+	identify() {
+		return i++;
 	},
-	path: {
-		type: Sequelize.STRING,
-		allowNull: false
-	},
-	sectionList: {
-		type: Sequelize.STRING,
-		allowNull: false,
-		set(value) {
-			this.setDataValue('sectionList', JSON.stringify(value));
-		},
-		get() {
-			return JSON.parse(this.getDataValue('sectionList'));
+	read() {
+		const isExist = fs.existsSync(filePath);
+		
+		if (!isExist) {
+			fs.writeFileSync(filePath, '[]');
 		}
+
+		const isFile = fs.statSync(filePath).isFile();
+
+		if (isFile) {
+			const result = fs.readFileSync(filePath, {
+				encoding: 'utf8'
+			});
+
+			if (result !== '') {
+				return JSON.parse(result);
+			}
+		}
+
+		return [];
 	},
-	state: {
-		type: Sequelize.BOOLEAN,
-		allowNull: false
+	write(id, options) {
+		const pageList = this.read();
+		const index = pageList.findIndex(page => page.id === id);
+		const newPath = `${filePath}.${Date.now()}`;
+
+		if (index === -1) {
+			pageList.push({
+				id, options
+			});
+		} else {
+			pageList[index] = {
+				id, options
+			};
+		}
+
+		fs.renameSync(filePath, newPath);
+		fs.writeFileSync(filePath, JSON.stringify(pageList));
+		fs.unlinkSync(newPath);
+
+		return {id, options};
 	},
-	comment:{
-		type: Sequelize.STRING
-	},
-	createdAt: {
-		type: Sequelize.DATE,
-		defaultValue: Sequelize.NOW,
-		allowNull: false
+	destroy(id) {
+		const pageList = this.read();
+		const index = pageList.findIndex(page => page.id === id);
+		const newPath = `${filePath}.${Date.now()}`;
+
+
+		if (index !== -1) {
+			pageList.splice(index, 1);
+		}
+
+		fs.renameSync(filePath, newPath);
+		fs.writeFileSync(filePath, JSON.stringify(pageList));
+		fs.unlinkSync(newPath);
+
+		return pageList;
 	}
 });

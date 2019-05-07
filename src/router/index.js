@@ -4,8 +4,6 @@ const article = require('./article');
 const category = require('./category');
 const classification = require('./classification');
 const file = require('./file');
-const format = require('./format');
-const section = require('./section');
 const page = require('./page');
 const user = require('./user');
 const login = require('./login');
@@ -18,8 +16,6 @@ validatedRouter.use(article.routes());
 validatedRouter.use(category.routes());
 validatedRouter.use(classification.routes());
 validatedRouter.use(file.routes());
-validatedRouter.use(format.routes());
-validatedRouter.use(section.routes());
 validatedRouter.use(page.routes());
 validatedRouter.use(user.routes());
 
