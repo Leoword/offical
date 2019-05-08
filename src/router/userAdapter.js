@@ -6,27 +6,35 @@ class User {
 		this.interface = interfaceInstance;
 	}
 
-	async create() {
-		return await this.interface.create();
+	async create(ctx) {
+		return await this.interface.create(ctx);
 	}
 
-	async update() {
-		return await this.interface.update();
+	async update(ctx) {
+		return await this.interface.update(ctx);
 	}
 
-	async get() {
-		return await this.interface.get();
+	async get(ctx) {
+		return await this.interface.get(ctx);
 	}
 
-	async destroy() {
-		await this.interface.destroy();
+	async getList(ctx) {
+		return await this.interface.getList(ctx);
+	}
+
+	async destroy(ctx) {
+		await this.interface.destroy(ctx);
 	}
 }
 
 module.exports = new User({
 	async create(ctx) {
 		const {request, db} = ctx;
-		const {username, password} = request;
+		const {username, password} = request.body;
+
+		if (!username || !password) {
+			ctx.throw(400, 'The username and password is required.');
+		}
 
 		const userList = await db.User.findAll({
 			where: {
@@ -35,7 +43,7 @@ module.exports = new User({
 		});
 
 		if (userList.length !== 0) {
-			ctx.throws(400, 'The username is existed.');
+			ctx.throw(400, 'The username is existed.');
 		}
 
 		db.User.create({
@@ -50,7 +58,7 @@ module.exports = new User({
 		const user = await db.User.findByPk(params.id);
 
 		if (!user) {
-			ctx.throws(404, 'The user is not existed.');
+			ctx.throw(404, 'The user is not existed.');
 		}
 
 		const userList = await db.User.findAll({
@@ -60,7 +68,7 @@ module.exports = new User({
 		});
 
 		if (userList.length !== 0) {
-			ctx.throws(400, 'The username is existed.');
+			ctx.throw(400, 'The username is existed.');
 		}
 
 		user.update({
@@ -86,7 +94,7 @@ module.exports = new User({
 		const user = await db.User.findByPk(params.id);
 
 		if (!user) {
-			ctx.throws(404, 'The user is not existed.');
+			ctx.throw(404, 'The user is not existed.');
 		}
 
 		ctx.body = {
@@ -100,7 +108,7 @@ module.exports = new User({
 		const user = await db.User.findByPk(params.id);
 
 		if (!user) {
-			ctx.throws(404, 'The user is not existed.');
+			ctx.throw(404, 'The user is not existed.');
 		}
 
 		await user.destroy();

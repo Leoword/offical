@@ -10,6 +10,21 @@ router.post('/article', async function (ctx) {
 	ctx.body = await content.write(request.body);
 });
 
+router.get('/article/:id', async function (ctx) {
+	const {db, params, query} = ctx;
+	const {Content} = db;
+
+	const content = await Content.get(params.id);
+
+	if (!content) {
+		ctx.throw(404, 'The article is not existed.');
+
+		return;
+	}
+
+	ctx.body = await content.read(query.lang);
+});
+
 router.get('/article', async function (ctx) {
 	const {db} = ctx;
 	const {Article, Content} = db;
@@ -31,21 +46,8 @@ router.get('/article', async function (ctx) {
 			});
 		}
 	}
-});
 
-router.get('/article/:id', async function (ctx) {
-	const {db, params, query} = ctx;
-	const {Content} = db;
-
-	const content = await Content.get(params.id);
-
-	if (!content) {
-		ctx.throw(404, 'The article is not existed.');
-
-		return;
-	}
-
-	ctx.body = await content.read(query.lang);
+	ctx.body = result;
 });
 
 router.delete('/article/:id', async function (ctx) {
