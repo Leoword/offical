@@ -4,7 +4,7 @@ const koaBody = require('koa-body');
 const koaSession = require('koa-session');
 const path = require('path');
 
-const config = require(path.resolve(process.cwd(), 'config.json'));
+const config = require(path.resolve('config.json'));
 const db = require('./src/model');
 const router = require('./src/router');
 const { setBackend } = require('./src/router/userAdapter');

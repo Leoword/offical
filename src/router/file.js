@@ -2,7 +2,7 @@ const Router = require('koa-router');
 const fs = require('fs');
 const path = require('path');
 
-const config = require(path.resolve(process.cwd(), 'config.json'));
+const config = require(path.resolve('config.json'));
 
 module.exports = new Router({
 	prefix: '/file'
@@ -49,7 +49,7 @@ module.exports = new Router({
 	const fileList = await ctx.File.findAll();
 
 	ctx.body = fileList.map(file => {
-		const {hash, type, comment} = file;
+		const { hash, type, comment } = file;
 
 		return {
 			url: `${config.server.protol}://${config.server.hostname}:${config.server.port}/api/file/${hash}`,

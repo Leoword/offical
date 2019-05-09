@@ -6,8 +6,8 @@ const Sequelize = require('sequelize');
 
 module.exports = {
 	async validate(ctx) {
-		const {db, request} = ctx;
-		const {username, password} = request.body;
+		const { db, request } = ctx;
+		const { username, password } = request.body;
 	
 		if (!username || !password) {
 			ctx.throw(400, 'The username and password is required.');
@@ -28,8 +28,8 @@ module.exports = {
 		ctx.session.username = username;
 	},
 	async create(ctx) {
-		const {request, db} = ctx;
-		const {username, password} = request.body;
+		const { request, db } = ctx;
+		const { username, password } = request.body;
 
 		if (!username || !password) {
 			ctx.throw(400, 'The username and password is required.');
@@ -51,8 +51,8 @@ module.exports = {
 		});
 	},
 	async update(ctx) {
-		const {db, params, request} = ctx;
-		const {username, password} = request.body;
+		const { db, params, request } = ctx;
+		const { username, password } = request.body;
 
 		const user = await db.User.findByPk(params.id - 0);
 
@@ -79,7 +79,7 @@ module.exports = {
 		});
 	},
 	async getList(ctx) {
-		const {db} = ctx;
+		const { db } = ctx;
 
 		const userList = await db.User.findAll();
 
@@ -91,7 +91,7 @@ module.exports = {
 		});
 	},
 	async get(ctx) {
-		const {db, params} = ctx;
+		const { db, params } = ctx;
 
 		const user = await db.User.findByPk(params.id - 0);
 
@@ -105,7 +105,7 @@ module.exports = {
 		};
 	},
 	async destroy(ctx) {
-		const {db, params} = ctx;
+		const { db, params } = ctx;
 
 		const user = await db.User.findByPk(params.id - 0);
 

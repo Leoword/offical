@@ -1,5 +1,5 @@
 const path = require('path');
-const config = require(path.resolve(process.cwd(), 'config.json'));
+const config = require(path.resolve('config.json'));
 
 const User = require('./user');
 const Page = require('./page');

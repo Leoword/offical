@@ -2,8 +2,8 @@
 const path = require('path');
 const fs = require('fs-extra');
 
-const {store} = require(path.resolve('config.json'));
-const filePath = `${store.path}/${store.filename}`;
+const { store } = require(path.resolve('config.json'));
+const filePath = path.resolve(store.path, store.filename);
 
 async function writeToFS(data) {
 	const newPath = `${filePath}.${Date.now()}`;

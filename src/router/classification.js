@@ -2,9 +2,9 @@ const Router = require('koa-router');
 const router = module.exports = new Router();
 
 router.post('/article/:articleId/category/:categoryId', async function (ctx) {
-	const {db, params} = ctx;
-	const {articleId, categoryId} = params;
-	const {Article, Category, Classification} = db;
+	const { db, params } = ctx;
+	const { articleId, categoryId } = params;
+	const { Article, Category, Classification } = db;
 
 	const article = await Article.findByPk(articleId);
 	const category = await Category.findByPk(categoryId);
@@ -25,8 +25,8 @@ router.post('/article/:articleId/category/:categoryId', async function (ctx) {
 });
 
 router.delete('/article/:articleId/category/:categoryId', async function (ctx) {
-	const {db, params} = ctx;
-	const {articleId, categoryId} = params;
+	const { db, params } = ctx;
+	const { articleId, categoryId } = params;
 
 	const classification = await db.Classification.findOne({
 		where: {
@@ -46,8 +46,8 @@ router.delete('/article/:articleId/category/:categoryId', async function (ctx) {
 });
 
 router.get('/article/:id/category', async function (ctx) {
-	const {db, params} = ctx;
-	const {Article, Classification} = db;
+	const { db, params } = ctx;
+	const { Article, Classification } = db;
 
 	const article = await Article.findByPk(params.id);
 

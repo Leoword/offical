@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const path = require('path');
 
-const { db } = require(path.resolve(process.cwd(), 'config.json'));
+const { db } = require(path.resolve('config.json'));
 
 module.exports = new Sequelize(db.database, db.username, db.password, {
 	host: db.host,
