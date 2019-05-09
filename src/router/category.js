@@ -1,13 +1,29 @@
 const Router = require('koa-router');
 const Sequelize = require('sequelize');
 
-const router = module.exports = new Router();
+module.exports = new Router({
+	prefix: '/category'
+}).use((ctx, next) => {
+	ctx.Category = ctx.db.Category;
+	ctx.Classification = ctx.db.Classification;
 
-router.post('/category', async function (ctx) {
-	const {db, request} = ctx;
-	const Category = db.Category;
+	return next();
+}).param('id', async (id, ctx, next) => {
+	const category = await ctx.Category.findByPk(Number(id));
+	
+	if (!category) {
+		ctx.throw(404, 'The category is not existed.');
 
-	const {name, comment, parent} = request.body;
+		return;
+	}
+
+	ctx.category = category;
+
+	return next();
+}).post('/', async function (ctx) {
+	const { Category, request } = ctx;
+
+	const { name, comment, parent } = request.body;
 
 	const categoryList = await Category.findAll({
 		where: {
@@ -36,36 +52,25 @@ router.post('/category', async function (ctx) {
 	});
 
 	ctx.body = category;
-});
-
-router.get('/category', async function (ctx) {
+}).get('/', async function (ctx) {
 	const {db} = ctx;
 
 	ctx.body = await db.Category.findAll();
-});
+}).get('/:id', async function (ctx) {
 
-router.get('/category/:id', async function (ctx) {
-	const {db, params} = ctx;
-	const Category = db.Category;
-
-	const category = await Category.findByPk(params.id);
-
-	if (!category) {
+	if (!ctx.category) {
 		ctx.throw(404, 'The category is not existed.');
 
 		return;
 	}
 
-	ctx.body = category;
-});
+	ctx.body = ctx.category;
+}).put('/:id', async function (ctx) {
+	const { Category, request } = ctx;
 
-router.put('/category/:id', async function (ctx) {
-	const {db, request, params} = ctx;
-	const Category = db.Category;
+	const { name, comment, parent } = request.body;
 
-	const {name, comment, parent} = request.body;
-
-	const category = await Category.findByPk(params.id);
+	const category = ctx.category;
 
 	if (!category) {
 		ctx.throw(404, 'The category is not existed.');
@@ -98,30 +103,37 @@ router.put('/category/:id', async function (ctx) {
 
 			return;
 		}
+
+		if (parentCategory.id === category.id) {
+			ctx.throw(400, 'The parent category should not be self.');
+
+			return;
+		}
 	}
 
 	ctx.body = await category.update({
 		name, comment, parent
 	});
-});
+}).delete('/:id', async function (ctx) {
+	const { Category, Classification } = ctx;
 
-router.delete('/category/:id', async function (ctx) {
-	const {db, params} = ctx;
-	const {Category, Classification} = db;
-
-	const category = await Category.findByPk(params.id);
-
-	if (!category) {
+	if (!ctx.category) {
 		ctx.throw(404, 'The category is not existed.');
 
 		return;
 	}
 
-	await category.destroy();
+	await ctx.category.destroy();
+
+	await Category.update({parent: null}, {
+		where: {
+			parent: ctx.category.id
+		}
+	});
 
 	await Classification.update({categoryId: null}, {
 		where: {
-			categoryId: category.id
+			categoryId: ctx.category.id
 		}
 	});
 

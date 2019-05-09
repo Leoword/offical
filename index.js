@@ -7,10 +7,14 @@ const path = require('path');
 const config = require(path.resolve(process.cwd(), 'config.json'));
 const db = require('./src/model');
 const router = require('./src/router');
+const { setBackend } = require('./src/router/userAdapter');
+
+setBackend(require('./backend/user'));
+db.Page.setBackend(require('./backend/fs'));
 
 const app = new Koa();
-app.keys = [Math.random().toString(16).substr(2, 8)];
 
+app.keys = [Math.random().toString(16).substr(2, 8)];
 app.context.db = db;
 
 app.use(koaBody({

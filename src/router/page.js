@@ -1,54 +1,34 @@
 const Router = require('koa-router');
-const router = module.exports = new Router();
 
-router.post('/page', async function (ctx) {
-	const {db, request} = ctx;
-	const {options} = request.body;
+module.exports = new Router({
+	prefix: '/page'
+}).use((ctx, next) => {
+	ctx.Page = ctx.db.Page;
 
-	const page = await db.Page.create();
-
-	ctx.body = page.write(options);
-});
-
-router.get('/page', async function (ctx) {
-	const {db} = ctx;
-
-	ctx.body = await db.Page.getPages();
-});
-
-router.get('/page/:id', async function (ctx) {
-	const {db, params} = ctx;
-
-	const page = await db.Page.get(params.id);
-
+	return next();
+}).param('id', async (id, ctx, next) => {
+	const pageId = id;
+	const page = await ctx.Page.getById(pageId);
+	
 	if (!page) {
 		ctx.throw(404, 'The page is not existed.');
 
 		return;
 	}
+
+	ctx.page = page;
+
+	return next();
+}).post('/', async ctx => {
+	const page = await ctx.Page.create(ctx.request.body);
 
 	ctx.body = page;
-});
-
-router.put('/page/:id', async function (ctx) {
-	const {db, request, params} = ctx;
-	const {options} = request.body;
-
-	const page = await db.Page.get(params.id);
-
-	if (!page) {
-		ctx.throw(404, 'The page is not existed.');
-
-		return;
-	}
-
-	ctx.body = await page.write(options);
-});
-
-router.delete('/page/:id', async function (ctx) {
-	const {db, params} = ctx;
-
-	await db.Page.destroy(params.id);
-
-	ctx.status = 200;
+}).get('/', async ctx => {
+	ctx.body = await ctx.Page.query();
+}).get('/:id', async ctx => {
+	ctx.body = ctx.page;
+}).put('/:id', async ctx => {
+	ctx.body = await ctx.page.update(ctx.request.body);
+}).delete('/:id', async ctx => {
+	ctx.body = await ctx.page.destroy();
 });

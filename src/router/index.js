@@ -23,11 +23,11 @@ router.use('/api', isLogin, validatedRouter.routes());
 router.use(login.routes());
 
 async function isLogin(ctx, next) {
-	// if (!ctx.session.username) {
-	// 	ctx.throw(401, 'You have to login.');
+	if (!ctx.session.username) {
+		ctx.throw(401, 'You have to login.');
 
-	// 	return;
-	// }
+		return;
+	}
 
 	await next();
 }

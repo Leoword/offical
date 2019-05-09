@@ -2,10 +2,10 @@ const Sequelize = require('sequelize');
 const sequelize = require('./sequelize');
 
 module.exports = sequelize.define('file', {
-	id: {
-		type: Sequelize.INTEGER,
-		autoIncrement: true,
-		primaryKey: true
+	hash: {
+		type: Sequelize.UUID,
+		primaryKey: true,
+		defaultValue: Sequelize.UUIDV4
 	},
 	type: {
 		type: Sequelize.STRING,

@@ -1,33 +1,31 @@
 const Router = require('koa-router');
-const router = module.exports = new Router();
+module.exports = new Router({
+	prefix: '/article'
+}).use((ctx, next) => {
+	ctx.Content = ctx.db.Content;
+	ctx.Article = ctx.db.Article;
 
-router.post('/article', async function (ctx) {
-	const {db, request} = ctx;
-	const {Content} = db;
-
-	const content = await Content.create();
-
-	ctx.body = await content.write(request.body);
-});
-
-router.get('/article/:id', async function (ctx) {
-	const {db, params, query} = ctx;
-	const {Content} = db;
-
-	const content = await Content.get(params.id);
-
+	return next();
+}).param('id', async (id, ctx, next) => {
+	const content = await ctx.Content.get(id);
+	
 	if (!content) {
 		ctx.throw(404, 'The article is not existed.');
 
 		return;
 	}
 
-	ctx.body = await content.read(query.lang);
-});
+	ctx.content = content;
 
-router.get('/article', async function (ctx) {
-	const {db} = ctx;
-	const {Article, Content} = db;
+	return next();
+}).post('/', async function (ctx) {
+	const { request } = ctx;
+
+	const content = await ctx.Content.create();
+
+	ctx.body = await content.write(request.body);
+}).get('/', async function (ctx) {
+	const { Article, Content } = ctx;
 	const result = [];
 
 	const articleList = await Article.findAll();
@@ -37,7 +35,7 @@ router.get('/article', async function (ctx) {
 		const langs = await content.langs();
 
 		for (let lang of langs) {
-			const commit = content.read(lang);
+			const commit = await content.read(lang);
 
 			result.push({
 				hash: commit.hash, articleId: article.id,
@@ -48,21 +46,10 @@ router.get('/article', async function (ctx) {
 	}
 
 	ctx.body = result;
-});
+}).get('/:id', async function (ctx) {
+	const { query } = ctx;
 
-router.delete('/article/:id', async function (ctx) {
-	const {db, params} = ctx;
-
-	const {Content} = db;
-
-	await Content.remove(params.id);
-});
-
-router.post('/article/:id/commit', async function (ctx) {
-	const {db, params, request} = ctx;
-	const {Content} = db;
-
-	const content = await Content.get(params.id);
+	const content = ctx.content;
 
 	if (!content) {
 		ctx.throw(404, 'The article is not existed.');
@@ -70,5 +57,14 @@ router.post('/article/:id/commit', async function (ctx) {
 		return;
 	}
 
-	ctx.body = await content.write(request.body);
+	ctx.body = await content.read(query.lang);
+}).delete('/:id', async function (ctx) {
+	const { params } = ctx;
+
+	ctx.body = await ctx.Content.remove(params.id);
+	ctx.status = 200;
+}).post('/:id/commit', async function (ctx) {
+	const { request } = ctx;
+
+	ctx.body = await ctx.content.write(request.body);
 });

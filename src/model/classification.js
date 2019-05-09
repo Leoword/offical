@@ -8,7 +8,7 @@ module.exports = sequelize.define('classification', {
 		primaryKey: true
 	},
 	articleId: {
-		type: Sequelize.INTEGER
+		type: Sequelize.STRING
 	},
 	categoryId: {
 		type: Sequelize.INTEGER

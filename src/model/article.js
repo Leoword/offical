@@ -3,8 +3,7 @@ const sequelize = require('./sequelize');
 
 module.exports = sequelize.define('article', {
 	id: {
-		type: Sequelize.INTEGER,
-		autoIncrement: true,
+		type: Sequelize.STRING,
 		primaryKey: true
 	},
 	createdAt: {

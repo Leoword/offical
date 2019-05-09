@@ -13,19 +13,24 @@ async function initStore() {
 
 	articleList.forEach(article => store[article.id] = {});
 	commitList.forEach(commit => {
-		const {hash, articleId, lang, title, abstract, author, createdAt} = commit;
+		const {hash, articleId, lang, title, abstract, text, author, createdAt} = commit;
 
-		if (store[articleId] && store[articleId][lang]) {
-			store[articleId][lang].push({
-				hash, title, abstract, author, createdAt
-			});
-		} else {
+		if (!store[articleId]) {
+			return;
+		}
+
+		if (!store[articleId][lang]) {
 			store[articleId][lang] = [];
 		}
+
+		store[articleId][lang].push({
+			hash, title, abstract, text, author, createdAt
+		});
 	});
+
+	return store;
 }
 
-let id = 1;
 let store = null;
 
 initStore().then(result => store = result);
@@ -33,7 +38,7 @@ initStore().then(result => store = result);
 const interface = new Interface({
 	content: {
 		identify() {
-			return id++;
+			return Math.random().toString(16).substr(2, 8);
 		},
 		read(id) {
 			return store[id];
@@ -109,28 +114,30 @@ const interface = new Interface({
 		}) {
 			let article = store[id];
 
-			if (!article) {
-				article = await Article.create({id});
-				
-				store[id] = {};
-			}
-
 			if (!article[lang]) {
 				article[lang] = [];
 			}
 
-			const commits = article[lang];
+			const commitList = article[lang];
+			const existedCommitList = commitList.filter(commit => {
+				commit.hash === hash;
+			});
+
+			if (existedCommitList.length !== 0) {
+				return existedCommitList[0];
+			}
+			
 
 			await Commit.create({
 				hash, lang,
-				articleId: article.id,
+				articleId: id,
 				title, abstract, text,
-				base: commits[commits.length - 1],
+				base: commitList.length > 0 ? commitList[commitList.length - 1].hash : null,
 				author, createdAt
 			});
 
-			commits.push({
-				hash, title, abstract, author, createdAt
+			article[lang].push({
+				hash, title, abstract, author, text, createdAt
 			});
 		},
 		query(id, lang) {

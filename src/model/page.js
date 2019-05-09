@@ -1,72 +1,53 @@
-const Base = require('./pageAdapter');
-const path = require('path');
-const fs = require('fs');
+let backend = null;
 
-const {store} = require(path.resolve(process.cwd(), 'config.json'));
-const filePath = `${store.path}/${store.filename}`;
+module.exports = class Page {
+	constructor(id, { name, title, meta, router, body}) {
+		this.id = id;
 
-let i = 0;
-
-module.exports = new Base({
-	identify() {
-		return i++;
-	},
-	read() {
-		const isExist = fs.existsSync(filePath);
-		
-		if (!isExist) {
-			fs.writeFileSync(filePath, '[]');
-		}
-
-		const isFile = fs.statSync(filePath).isFile();
-
-		if (isFile) {
-			const result = fs.readFileSync(filePath, {
-				encoding: 'utf8'
-			});
-
-			if (result !== '') {
-				return JSON.parse(result);
-			}
-		}
-
-		return [];
-	},
-	write(id, options) {
-		const pageList = this.read();
-		const index = pageList.findIndex(page => page.id === id);
-		const newPath = `${filePath}.${Date.now()}`;
-
-		if (index === -1) {
-			pageList.push({
-				id, options
-			});
-		} else {
-			pageList[index] = {
-				id, options
-			};
-		}
-
-		fs.renameSync(filePath, newPath);
-		fs.writeFileSync(filePath, JSON.stringify(pageList));
-		fs.unlinkSync(newPath);
-
-		return {id, options};
-	},
-	destroy(id) {
-		const pageList = this.read();
-		const index = pageList.findIndex(page => page.id === id);
-		const newPath = `${filePath}.${Date.now()}`;
-
-
-		if (index !== -1) {
-			pageList.splice(index, 1);
-		}
-
-		fs.renameSync(filePath, newPath);
-		fs.writeFileSync(filePath, JSON.stringify(pageList));
-		fs.unlinkSync(newPath);
-
-		return pageList;
+		this.name = name;
+		this.title = title;
+		this.meta = meta;
+		this.router = router;
+		this.body = body;
 	}
-});
+
+	async update(options) {
+		const page = await backend.write(this.id, options);
+
+		return page;
+	}
+
+	async destroy() {
+		return await backend.destroy(this.id);
+	}
+
+	static async getById(id) {
+		const page = await backend.read(id);
+
+		if (!page) {
+			return null;
+		}
+
+		return new this(page.id, page);
+	}
+
+	static async create(options) {
+		const id = await backend.identify();
+
+		await backend.write(id, options);
+
+		return new this(id, options);
+	}
+
+	static async query() {
+		const pageList = await backend.readAll();
+
+		return pageList.map(page => {
+			return new this(page.id, page);
+		});
+	}
+
+	static setBackend(newBackend) {
+		backend = newBackend;
+	}
+};

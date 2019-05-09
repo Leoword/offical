@@ -4,12 +4,27 @@ const path = require('path');
 
 const config = require(path.resolve(process.cwd(), 'config.json'));
 
-const router = module.exports = new Router();
+module.exports = new Router({
+	prefix: '/file'
+}).use((ctx, next) => {
+	ctx.File = ctx.db.File;
 
-router.post('/file', async function (ctx) {
-	const {db, request} = ctx;
+	return next();
+}).param('hash', async (hash, ctx, next) => {
+	const file = await ctx.File.findByPk(hash);
+
+	if (!file) {
+		ctx.throw(404, 'The file is not existed.');
+
+		return;
+	}
+
+	ctx.file = file;
+
+	return next();
+}).post('/', async function (ctx) {
+	const { request } = ctx;
 	
-	const {type} = request.body;
 	const file = request.files.file;
 
 	let data = Buffer.from([]);
@@ -21,7 +36,7 @@ router.post('/file', async function (ctx) {
  
 	return new Promise((resolve) => {
 		readerStream.on('end',async function () {
-			const newFile = await db.File.create({type, file: data});
+			const newFile = await ctx.File.create({type: file.type, file: data});
 	
 			ctx.body = {
 				url: `${config.server.protocol}://${config.server.hostname}:${config.server.port}/api/file/${newFile.hash}`
@@ -30,12 +45,8 @@ router.post('/file', async function (ctx) {
 			resolve();
 		});
 	});
-});
-
-router.get('/file', async function (ctx) {
-	const {db} = ctx;
-
-	const fileList = await db.File.findAll();
+}).get('/', async function (ctx) {
+	const fileList = await ctx.File.findAll();
 
 	ctx.body = fileList.map(file => {
 		const {hash, type, comment} = file;
@@ -45,30 +56,19 @@ router.get('/file', async function (ctx) {
 			type, comment, id: hash
 		};
 	});
-});
-
-router.get('/file/:hash', async function (ctx) {
-	const {db, params} = ctx;
-
-	const file = await db.File.findByPk(params.hash);
-
-	if (!file) {
+}).get('/:hash', async function (ctx) {
+	if (!ctx.file) {
 		ctx.throw(404, 'The file is not existed.');
 
 		return;
 	}
 
-	ctx.set('Content-Type', file.type);
-	ctx.body = Buffer.from(file.file);
-});
+	ctx.set('Content-Type', ctx.file.type);
+	ctx.body = Buffer.from(ctx.file.file);
+}).delete('/:hash', async function (ctx) {
+	const { Commit } = ctx.db;
 
-router.delete('/file/:hash', async function (ctx) {
-	const {db, params} = ctx;
-	const {File, Commit} = db;
-
-	const file = await File.findByPk(params.hash);
-
-	if (!file) {
+	if (!ctx.file) {
 		ctx.throw(404, 'The file is not existed.');
 
 		return;
@@ -78,13 +78,13 @@ router.delete('/file/:hash', async function (ctx) {
 		attributes: ['assets']
 	});
 
-	const isUsing = commits.filter(commit => commit.assets.indexOf(file.hash) !== -1);
+	const isUsing = commits.filter(commit => commit.assets.indexOf(ctx.file.hash) !== -1);
 
-	if (isUsing) {
+	if (isUsing.length !== 0) {
 		ctx.throw(403, 'The file is used');
 	}
 
-	await file.destroy();
+	await ctx.file.destroy();
 
 	ctx.status = 200;
 });

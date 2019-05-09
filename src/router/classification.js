@@ -15,11 +15,13 @@ router.post('/article/:articleId/category/:categoryId', async function (ctx) {
 		return;
 	}
 
-	ctx.body = await Classification.findOrCreate({
+	const classificationList = await Classification.findOrCreate({
 		where: {
 			articleId, categoryId
 		}
 	});
+
+	ctx.body = classificationList[0];
 });
 
 router.delete('/article/:articleId/category/:categoryId', async function (ctx) {
@@ -40,7 +42,7 @@ router.delete('/article/:articleId/category/:categoryId', async function (ctx) {
 
 	await classification.destroy();
 
-	ctx.status(200);
+	ctx.status = 200;
 });
 
 router.get('/article/:id/category', async function (ctx) {
