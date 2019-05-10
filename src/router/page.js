@@ -20,6 +20,11 @@ module.exports = new Router({
 
 	return next();
 }).post('/', async ctx => {
+	const { name, router} = ctx.request.body;
+	if (!name || !router) {
+		ctx.throw(400, 'The name and router is required.');
+	}
+
 	const page = await ctx.Page.create(ctx.request.body);
 
 	ctx.body = page;

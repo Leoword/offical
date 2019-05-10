@@ -1,118 +1,116 @@
 
 const crypto = require('crypto');
 const KEY = 'website:secret';
+const path = require('path');
 
 const Sequelize = require('sequelize');
+const { sequelize } = require('../src');
+
+const { admin } = require(path.resolve('config.json'));
+
+const User = sequelize.define('user', {
+	id: {
+		type: Sequelize.INTEGER,
+		autoIncrement: true,
+		primaryKey: true
+	},
+	username: {
+		type: Sequelize.STRING(32),
+		allowNull: false,
+		unique: true
+	},
+	password: {
+		type: Sequelize.STRING,
+		allowNull: false
+	},
+	createdAt: {
+		type: Sequelize.DATE,
+		defaultValue: Sequelize.NOW,
+		allowNull: false
+	}
+});
+
+const cache = {
+	0: {
+		id: 0,
+		username: admin.username,
+		password: crypto.createHmac('sha256', KEY).update(admin.password).digest('hex')
+	}
+};
+
+async function initCache() {
+	const userList = await User.findAll();
+
+	userList.map(user => {
+		cache[user.id] = user;
+	});
+}
 
 module.exports = {
-	async validate(ctx) {
-		const { db, request } = ctx;
-		const { username, password } = request.body;
-	
-		if (!username || !password) {
-			ctx.throw(400, 'The username and password is required.');
+	findAll() {
+		const result = [];
+
+		for (let key in cache) {
+			const { username, password} = cache[key];
+
+			result.push({
+				id: key,
+				username, password
+			});
 		}
-	
-		const user = await db.User.findOne({
-			where: {
-				username,
-				password: crypto.createHmac('sha256', KEY).update(password).digest('hex')
-			}
-		});
-	
-		if (!user) {
-			ctx.throw(404, 'The user is not existed.');
-		}
-	
-		ctx.session.id = user.id;
-		ctx.session.username = username;
+
+		return result;
 	},
-	async create(ctx) {
-		const { request, db } = ctx;
-		const { username, password } = request.body;
-
-		if (!username || !password) {
-			ctx.throw(400, 'The username and password is required.');
-		}
-
-		const userList = await db.User.findAll({
-			where: {
-				username
-			}
-		});
-
-		if (userList.length !== 0) {
-			ctx.throw(400, 'The username is existed.');
-		}
-
-		db.User.create({
+	findByPk(id) {
+		return cache[id];
+	},
+	async create({ username, password }) {
+		const user =  await User.create({
 			username,
 			password: crypto.createHmac('sha256', KEY).update(password).digest('hex')
 		});
+
+		cache[user.id] = user;
+
+		return user;
 	},
-	async update(ctx) {
-		const { db, params, request } = ctx;
-		const { username, password } = request.body;
-
-		const user = await db.User.findByPk(params.id - 0);
-
-		if (!user) {
-			ctx.throw(404, 'The user is not existed.');
-		}
-
-		const userList = await db.User.findAll({
+	async update(id, { username, password }) {
+		await User.update({
+			username,
+			password: password ? crypto.createHmac('sha256', KEY).update(password).digest('hex') : undefined
+		}, {
 			where: {
-				username,
-				id: {
-					[Sequelize.Op.not]: user.id
-				}
+				id
 			}
 		});
 
-		if (userList.length !== 0) {
-			ctx.throw(400, 'The username is existed.');
-		}
-
-		user.update({
-			username,
-			password: password ? crypto.createHmac('sha256', KEY).update(password).digest('hex') : undefined
-		});
-	},
-	async getList(ctx) {
-		const { db } = ctx;
-
-		const userList = await db.User.findAll();
-
-		ctx.body = userList.map(user => {
-			return {
-				id: user.id, username: user.username,
-				createdAt: user.createdAt
-			};
-		});
-	},
-	async get(ctx) {
-		const { db, params } = ctx;
-
-		const user = await db.User.findByPk(params.id - 0);
-
-		if (!user) {
-			ctx.throw(404, 'The user is not existed.');
-		}
-
-		ctx.body = {
-			id: user.id, username: user.username,
-			createdAt: user.createdAt
+		cache[id] = {
+			id, username, password
 		};
+
+		return cache[id];
 	},
-	async destroy(ctx) {
-		const { db, params } = ctx;
+	async destroy(id) {
+		const user = await User.destroy({
+			where: {
+				id
+			}
+		});
 
-		const user = await db.User.findByPk(params.id - 0);
+		delete cache[id];
 
-		if (!user) {
-			ctx.throw(404, 'The user is not existed.');
+		return user;
+	},
+	validate({ username, password}) {
+		let user;
+
+		for (let key in cache) {
+			if (cache[key].username === username && cache[key].password === crypto.createHmac('sha256', KEY).update(password).digest('hex')) {
+				user = cache[key];
+			}
 		}
 
-		await user.destroy();
-	}
+		return user;
+	},
+	initCache
 };

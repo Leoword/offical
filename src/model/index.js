@@ -1,8 +1,8 @@
 const path = require('path');
 const config = require(path.resolve('config.json'));
 
-const User = require('./user');
-const Page = require('./page');
+const { User } = require('./user');
+const { Page } = require('./page');
 const Content = require('./content');
 const Article = require('./article');
 const Commit = require('./commit');

@@ -5,12 +5,15 @@ const koaSession = require('koa-session');
 const path = require('path');
 
 const config = require(path.resolve('config.json'));
+const userBackend = require('./backend/user');
 const db = require('./src/model');
 const router = require('./src/router');
-const { setBackend } = require('./src/router/userAdapter');
+const { userSetBackend, pageSetBackend } = require('./src');
 
-setBackend(require('./backend/user'));
-db.Page.setBackend(require('./backend/fs'));
+userBackend.initCache();
+
+userSetBackend(userBackend);
+pageSetBackend(require('./backend/fs'));
 
 const app = new Koa();
 

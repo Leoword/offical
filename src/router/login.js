@@ -1,10 +1,15 @@
 const Router = require('koa-router');
 const router = module.exports = new Router();
 
-const { User } = require('./userAdapter');
-
 router.post('/login', async function (ctx) {
-	await User.validate(ctx);
+	const user = await ctx.db.User.validate(ctx.request.body);
+
+	if (!user) {
+		ctx.throw(404, 'The user is not existed.');
+	}
+
+	ctx.session.id = user.id;
+	ctx.session.username = user.username;
 
 	ctx.status = 200;
 });

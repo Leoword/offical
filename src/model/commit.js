@@ -29,13 +29,13 @@ module.exports = sequelize.define('commit', {
 		type: Sequelize.STRING,
 		get() {
 			const text = this.getDataValue('text');
+			const assets = [];
 
 			if (!text) {
-				return null;
+				return assets;
 			}
 
 			const nodeList = markdownIt().parse(text);
-			const assets = [];
 
 			nodeList.forEach(node => {
 				if (node.children !== null) {
@@ -43,7 +43,7 @@ module.exports = sequelize.define('commit', {
 						if (element.type === 'image') {
 							const url = element.attrs[0][1];
 
-							assets.push(url.substring(url.lastIndexOf('/') + 1));
+							assets.push(url);
 						}
 					});
 				}
@@ -51,7 +51,10 @@ module.exports = sequelize.define('commit', {
 
 			return assets;
 		}
-	}, 
+	},
+	thumbnail: {
+		type: Sequelize.STRING
+	},
 	text: {
 		type: Sequelize.TEXT,
 		allowNull: false

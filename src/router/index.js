@@ -13,12 +13,14 @@ const router = module.exports = new Router({
 });
 
 router.use(login.routes());
-router.use(isLogin, article.routes());
-router.use(isLogin, category.routes());
-router.use(isLogin, classification.routes());
-router.use(isLogin, file.routes());
-router.use(isLogin, page.routes());
-router.use(isLogin, user.routes());
+router.use(isLogin);
+
+router.use(article.routes());
+router.use(category.routes());
+router.use(classification.routes());
+router.use(file.routes());
+router.use(page.routes());
+router.use(user.routes());
 
 async function isLogin(ctx, next) {
 	if (!ctx.session.username) {

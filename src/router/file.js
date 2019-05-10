@@ -77,8 +77,14 @@ module.exports = new Router({
 	const commits = await Commit.findAll({
 		attributes: ['assets']
 	});
+	
+	const isUsing = commits.filter(commit => {
+		const assets = commit.assets.map(asset => {
+			return asset.substring(asset.lastIndexOf('/') + 1);
+		});
 
-	const isUsing = commits.filter(commit => commit.assets.indexOf(ctx.file.hash) !== -1);
+		return assets.indexOf(ctx.file.hash) !== -1;
+	});
 
 	if (isUsing.length !== 0) {
 		ctx.throw(403, 'The file is used');

@@ -1,6 +1,6 @@
 let backend = null;
 
-module.exports = class Page {
+exports.Page = class Page {
 	constructor(id, { name, title, meta, router, body}) {
 		this.id = id;
 
@@ -46,8 +46,8 @@ module.exports = class Page {
 			return new this(page.id, page);
 		});
 	}
+};
 
-	static setBackend(newBackend) {
-		backend = newBackend;
-	}
+exports.setBackend = function (newBackend) {
+	backend = newBackend;
 };
