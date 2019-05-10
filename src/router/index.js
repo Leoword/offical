@@ -8,19 +8,17 @@ const page = require('./page');
 const user = require('./user');
 const login = require('./login');
 
-const router = module.exports = new Router();
+const router = module.exports = new Router({
+	prefix: '/api'
+});
 
-const validatedRouter = new Router();
-
-validatedRouter.use(article.routes());
-validatedRouter.use(category.routes());
-validatedRouter.use(classification.routes());
-validatedRouter.use(file.routes());
-validatedRouter.use(page.routes());
-validatedRouter.use(user.routes());
-
-router.use('/api', isLogin, validatedRouter.routes());
 router.use(login.routes());
+router.use(isLogin, article.routes());
+router.use(isLogin, category.routes());
+router.use(isLogin, classification.routes());
+router.use(isLogin, file.routes());
+router.use(isLogin, page.routes());
+router.use(isLogin, user.routes());
 
 async function isLogin(ctx, next) {
 	if (!ctx.session.username) {

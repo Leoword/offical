@@ -9,7 +9,7 @@ router.post('/login', async function (ctx) {
 	ctx.status = 200;
 });
 
-router.delete('/login', function (ctx) {
+router.delete('/logout', function (ctx) {
 	delete ctx.session.username;
 
 	ctx.status = 200;
