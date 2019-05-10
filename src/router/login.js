@@ -15,7 +15,7 @@ router.post('/login', async function (ctx) {
 });
 
 router.delete('/logout', function (ctx) {
-	delete ctx.session.username;
+	delete ctx.session;
 
 	ctx.status = 200;
 });

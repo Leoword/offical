@@ -52,7 +52,7 @@ module.exports = new Router({
 		const { hash, type, comment } = file;
 
 		return {
-			url: `${config.server.protol}://${config.server.hostname}:${config.server.port}/api/file/${hash}`,
+			url: `${config.server.protocol}://${config.server.hostname}:${config.server.port}/api/file/${hash}`,
 			type, comment, id: hash
 		};
 	});

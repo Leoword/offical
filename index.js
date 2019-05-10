@@ -28,8 +28,8 @@ app.use(koaBody({
 }));
 
 app.use(koaSession({
-	key: config.cookie.key,
-	maxAge: config.cookie.maxAge
+	key: 'website:session',
+	maxAge: 43200000
 }, app));
 
 app.use(serve(path.resolve(__dirname, config.static.path), {

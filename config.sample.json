@@ -11,15 +11,12 @@
 		"port": "8080",
 		"protocol": "http"
 	},
-	"cookie": {
-		"key": "koa:sess",
-		"maxAge": 86400000
-	},
 	"static": {
 		"path": "./www"
 	},
-	"store": {
-		"path": "C:\\Users",
-		"filename": "store.json"
+	"store": "C:\\Users\\store.json",
+	"account": {
+		"username": "admin",
+		"password": "admin"
 	}
 }

@@ -6,7 +6,7 @@ const path = require('path');
 const Sequelize = require('sequelize');
 const { sequelize } = require('../src');
 
-const { admin } = require(path.resolve('config.json'));
+const { account } = require(path.resolve('config.json'));
 
 const User = sequelize.define('user', {
 	id: {
@@ -33,8 +33,8 @@ const User = sequelize.define('user', {
 const cache = {
 	0: {
 		id: 0,
-		username: admin.username,
-		password: crypto.createHmac('sha256', KEY).update(admin.password).digest('hex')
+		username: account.username,
+		password: crypto.createHmac('sha256', KEY).update(account.password).digest('hex')
 	}
 };
 

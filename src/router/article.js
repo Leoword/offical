@@ -22,8 +22,11 @@ module.exports = new Router({
 	const { request } = ctx;
 
 	const content = await ctx.Content.create();
+	const commit = await content.write(request.body);
 
-	ctx.body = await content.write(request.body);
+	commit.articleId = content.id;
+
+	ctx.body = commit;
 }).get('/', async function (ctx) {
 	const { Article, Content } = ctx;
 	const result = [];
@@ -61,7 +64,15 @@ module.exports = new Router({
 }).delete('/:id', async function (ctx) {
 	const { params } = ctx;
 
-	ctx.body = await ctx.Content.remove(params.id);
+	const article = await ctx.Content.remove(params.id);
+
+	await ctx.db.Classification.destroy({
+		where: {
+			articleId: params.id
+		}
+	});
+
+	ctx.body = article;
 	ctx.status = 200;
 }).post('/:id/commit', async function (ctx) {
 	const { request } = ctx;
