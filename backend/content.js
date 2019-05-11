@@ -87,27 +87,31 @@ const Commit = sequelize.define('commit', {
 async function initStore() {
 	const store = {};
 
-	const articleList = await Article.findAll();
-	const commitList = await Commit.findAll({
-		order: [['createdAt', 'ASC']]
-	});
-
-	articleList.forEach(article => store[article.id] = {});
-	commitList.forEach(commit => {
-		const {hash, articleId, lang, title, abstract, text, author, createdAt} = commit;
-
-		if (!store[articleId]) {
-			return;
-		}
-
-		if (!store[articleId][lang]) {
-			store[articleId][lang] = [];
-		}
-
-		store[articleId][lang].push({
-			hash, title, abstract, text, author, createdAt
+	try {
+		const articleList = await Article.findAll();
+		const commitList = await Commit.findAll({
+			order: [['createdAt', 'ASC']]
 		});
-	});
+	
+		articleList.forEach(article => store[article.id] = {});
+		commitList.forEach(commit => {
+			const {hash, articleId, lang, title, abstract, text, author, createdAt} = commit;
+	
+			if (!store[articleId]) {
+				return;
+			}
+	
+			if (!store[articleId][lang]) {
+				store[articleId][lang] = [];
+			}
+	
+			store[articleId][lang].push({
+				hash, title, abstract, text, author, createdAt
+			});
+		});
+	} catch (e) {
+		return {};
+	}
 
 	return store;
 }

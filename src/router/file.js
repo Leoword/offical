@@ -66,28 +66,10 @@ module.exports = new Router({
 	ctx.set('Content-Type', ctx.file.type);
 	ctx.body = Buffer.from(ctx.file.file);
 }).delete('/:hash', async function (ctx) {
-	const { Commit } = ctx.db;
-
 	if (!ctx.file) {
 		ctx.throw(404, 'The file is not existed.');
 
 		return;
-	}
-
-	const commits = await Commit.findAll({
-		attributes: ['assets']
-	});
-	
-	const isUsing = commits.filter(commit => {
-		const assets = commit.assets.map(asset => {
-			return asset.substring(asset.lastIndexOf('/') + 1);
-		});
-
-		return assets.indexOf(ctx.file.hash) !== -1;
-	});
-
-	if (isUsing.length !== 0) {
-		ctx.throw(403, 'The file is used');
 	}
 
 	await ctx.file.destroy();

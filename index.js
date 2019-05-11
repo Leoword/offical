@@ -21,7 +21,6 @@ const router = require('./src/router');
 
 userBackend.initCache();
 
-
 const app = new Koa();
 
 app.keys = [Math.random().toString(16).substr(2, 8)];
