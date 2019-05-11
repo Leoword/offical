@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "@or-change/content": "^0.1.0",
     "fs-extra": "^7.0.1",
     "koa": "^2.7.0",
     "koa-body": "^4.1.0",

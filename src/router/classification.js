@@ -4,9 +4,9 @@ const router = module.exports = new Router();
 router.post('/article/:articleId/category/:categoryId', async function (ctx) {
 	const { db, params } = ctx;
 	const { articleId, categoryId } = params;
-	const { Article, Category, Classification } = db;
+	const { Content, Category, Classification } = db;
 
-	const article = await Article.findByPk(articleId);
+	const article = await Content.get(articleId);
 	const category = await Category.findByPk(categoryId);
 
 	if (!article || !category) {
@@ -47,9 +47,9 @@ router.delete('/article/:articleId/category/:categoryId', async function (ctx) {
 
 router.get('/article/:id/category', async function (ctx) {
 	const { db, params } = ctx;
-	const { Article, Classification } = db;
+	const { Content, Classification } = db;
 
-	const article = await Article.findByPk(params.id);
+	const article = await Content.get(params.id);
 
 	if (!article) {
 		ctx.throw(404, 'The article is not existed.');

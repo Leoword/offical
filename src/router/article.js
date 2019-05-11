@@ -3,7 +3,6 @@ module.exports = new Router({
 	prefix: '/article'
 }).use((ctx, next) => {
 	ctx.Content = ctx.db.Content;
-	ctx.Article = ctx.db.Article;
 
 	return next();
 }).param('id', async (id, ctx, next) => {
@@ -28,20 +27,19 @@ module.exports = new Router({
 
 	ctx.body = commit;
 }).get('/', async function (ctx) {
-	const { Article, Content } = ctx;
+	const { Content } = ctx;
 	const result = [];
 
-	const articleList = await Article.findAll();
+	const contentList = await Content.query();
 
-	for (let article of articleList) {
-		const content = await Content.get(article.id);
+	for (let content of contentList) {
 		const langs = await content.langs();
 
 		for (let lang of langs) {
 			const commit = await content.read(lang);
 
 			result.push({
-				hash: commit.hash, articleId: article.id,
+				hash: commit.hash, articleId: content.id,
 				lang, title: commit.title, abstract: commit.abstract,
 				author: commit.author, createdAt: commit.createdAt
 			});

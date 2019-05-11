@@ -3,9 +3,7 @@ const config = require(path.resolve('config.json'));
 
 const { User } = require('./user');
 const { Page } = require('./page');
-const Content = require('./content');
-const Article = require('./article');
-const Commit = require('./commit');
+const { Content } = require('./content');
 const Category = require('./category');
 const Classification = require('./classification');
 const File = require('./file');
@@ -19,7 +17,7 @@ sequelize.sync({
 module.exports = {
 	User,
 	Page,
-	Content, Article, Commit,
+	Content,
 	Category, Classification,
 	File
 };
