@@ -39,7 +39,7 @@ module.exports = new Router({
 			const newFile = await ctx.File.create({type: file.type, file: data});
 	
 			ctx.body = {
-				url: `${config.server.protocol}://${config.server.hostname}:${config.server.port}/api/file/${newFile.hash}`
+				url: `${config.server.url}/api/file/${newFile.hash}`
 			};
 
 			resolve();
@@ -52,7 +52,7 @@ module.exports = new Router({
 		const { hash, type, comment } = file;
 
 		return {
-			url: `${config.server.protocol}://${config.server.hostname}:${config.server.port}/api/file/${hash}`,
+			url: `${config.server.url}/api/file/${hash}`,
 			type, comment, id: hash
 		};
 	});
