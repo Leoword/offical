@@ -13,6 +13,20 @@ const router = module.exports = new Router({
 });
 
 router.use(login.routes());
+
+router.get('/file/:hash', async function (ctx) {
+	const file = await ctx.db.File.findByPk(ctx.params.hash);
+
+	if (!file) {
+		ctx.throw(404, 'The file is not existed.');
+
+		return;
+	}
+
+	ctx.set('Content-Type', file.type);
+	ctx.body = Buffer.from(file.file);
+});
+
 router.use(isLogin);
 
 router.use(article.routes());

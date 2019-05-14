@@ -24,6 +24,12 @@ module.exports = new Router({
 	return next();
 }).post('/', async function (ctx) {
 	const { request } = ctx;
+
+	if (!request.files || !request.files.file) {
+		ctx.throw(400, 'The file is required.');
+
+		return;
+	}
 	
 	const file = request.files.file;
 
@@ -56,15 +62,6 @@ module.exports = new Router({
 			type, comment, id: hash
 		};
 	});
-}).get('/:hash', async function (ctx) {
-	if (!ctx.file) {
-		ctx.throw(404, 'The file is not existed.');
-
-		return;
-	}
-
-	ctx.set('Content-Type', ctx.file.type);
-	ctx.body = Buffer.from(ctx.file.file);
 }).delete('/:hash', async function (ctx) {
 	if (!ctx.file) {
 		ctx.throw(404, 'The file is not existed.');
