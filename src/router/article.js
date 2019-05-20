@@ -20,7 +20,7 @@ module.exports = new Router({
 }).post('/', async function (ctx) {
 	const { request } = ctx;
 
-	const content = await ctx.Content.create();
+	const content = await ctx.Content.create(request.body.language);
 	const commit = await content.write(request.body);
 
 	commit.articleId = content.id;
